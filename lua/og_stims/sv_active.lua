@@ -93,15 +93,22 @@ function OG_Stims:GetActive(ply, category)
     return activeTable(ply)[category]
 end
 
--- Consume the stim in `slot`, respecting per-stim cooldown, and start its buff.
+-- Use a quick slot: same as using the stim in it directly.
 function OG_Stims:UseSlot(ply, slot)
     local id = self:GetLoadout(ply)[slot]
-    if not id then return false, "That loadout slot is empty." end
+    if not id then return false, "That quick slot is empty." end
+    return self:UseItem(ply, id)
+end
+
+-- Consume one stim from the player's inventory (no quick slot needed), respecting the per-stim
+-- cooldown, and start its buff.
+function OG_Stims:UseItem(ply, id)
+    local stim = self:GetStim(id)
+    if not stim then return false, "That can't be used." end
 
     local ok, reason = self:CanUse(ply, id)
     if not ok then return false, reason end
 
-    local stim = self:GetStim(id)
     local cdKey = ply:SteamID64() .. ":" .. id
     local last = cooldowns[cdKey]
     if last and CurTime() - last < (stim.cooldown or 0) then

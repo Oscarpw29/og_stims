@@ -2,6 +2,7 @@ OG.Net.Strings({
     "og_stims.sync",         -- sv -> cl: full inventory/loadout (Store:Save's syncNetString)
     "og_stims.active_sync",  -- sv -> cl: one category's active buff state, for the HUD
     "og_stims.use",          -- cl -> sv: use the stim in a loadout slot
+    "og_stims.use_item",     -- cl -> sv: use a stim straight from the inventory
     "og_stims.set_slot",     -- cl -> sv: assign a loadout slot from the menu
     "og_stims.open_box",     -- cl -> sv: open a lootbox
     "og_stims.box_result",   -- sv -> cl: what a just-opened crate gave, for the reel animation
@@ -67,3 +68,11 @@ if OG_Stims.IconsViaFastDL then
     for _, box in pairs(OG_Stims.Lootboxes) do add(box.icon) end
     for path in pairs(files) do resource.AddFile(path) end
 end
+
+OG.Net.Receive("og_stims.use_item", 0.25, function(len, ply)
+    local id = net.ReadString()
+    local ok, reason = OG_Stims:UseItem(ply, id)
+    if not ok and OG.Notify then
+        OG.Notify(ply, reason or "Couldn't use that stim.", "bad")
+    end
+end)

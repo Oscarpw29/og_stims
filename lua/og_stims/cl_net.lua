@@ -72,3 +72,10 @@ end)
 net.Receive("og_stims.open_menu", function()
     OG_Stims.OpenMenu()
 end)
+
+-- Use a stim straight from the inventory; the server checks you own it and its cooldown.
+function OG_Stims.UseItem(id)
+    net.Start("og_stims.use_item")
+        net.WriteString(id)
+    net.SendToServer()
+end

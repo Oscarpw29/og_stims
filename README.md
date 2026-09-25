@@ -14,7 +14,12 @@ Requires `OG_core`; buffs act through `skilltrees`.
   `keepOnDeath`); epic and legendary stims survive. The menu says which is which.
 - **Config:** everything is data in `lua/og_stims/sh_config.lua`. The `Effects` table holds the
   five tier values per bonus and the stims are generated from it.
-- **Flow:** own -> assign to one of `OG_Stims.LOADOUT_SLOTS` (6) loadout slots via `!stims`,
+- **Using a stim:** open the menu (`!stims`, the C-menu icon or `og_stims_menu`) and press **USE** on any
+  stim - no setup needed. The button reads REPLACE/REFRESH when a buff in that category is already
+  active, and replacing a higher tier asks first. Double-click also uses a stim.
+- **Quick slots (optional):** right-click a stim > Put in quick slot, then click the slot (or bind a key:
+  `bind kp_1 "og_stims_use 1"`) to use it in one press. Right-click a slot to clear it.
+- **Flow:** own -> assign to one of `OG_Stims.LOADOUT_SLOTS` (6) quick slots via `!stims`,
   the C-menu icon or `og_stims_menu` -> use in the field with `og_stims_use <slot>` (bind a key).
 - **Crates & the casino machine:** `OG_Stims.Lootboxes` defines crates with a `price`
   (`money` = DarkRP, `playtime` = playtime points), `rarityWeights` and `pity`. Place an

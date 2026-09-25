@@ -38,6 +38,35 @@ local function RarityColor(rarityID)
     return r and r.color or UI.Col.text
 end
 
+-- What using this stim would do to the buff you already have in its category:
+-- "use" (nothing active), "refresh" (same stim, timer resets), "replace" (a different stim).
+local function UseMode(stim, id)
+    local active = OG_Stims.MyActive[stim.category]
+    if not active or active.expires <= CurTime() then return "use" end
+    return active.id == id and "refresh" or "replace"
+end
+
+-- Use a stim from the inventory. Asks first if it would replace a HIGHER tier buff, since that
+-- throws away the better stim's remaining time.
+local function TryUse(id)
+    local stim = OG_Stims:GetStim(id)
+    if not stim then return end
+
+    local active = OG_Stims.MyActive[stim.category]
+    local current = active and active.id ~= id and active.expires > CurTime() and OG_Stims:GetStim(active.id)
+    if current and OG_Stims:RarityRank(current.rarity) > OG_Stims:RarityRank(stim.rarity) then
+        Derma_Query(
+            "Using " .. stim.name .. " will replace your active " .. current.name .. ", which is a higher tier.",
+            "Replace buff?",
+            "Replace", function() OG_Stims.UseItem(id) end,
+            "Cancel"
+        )
+        return
+    end
+
+    OG_Stims.UseItem(id)
+end
+
 -- ── Main menu ────────────────────────────────────────────────────────────
 function OG_Stims.OpenMenu()
     if IsValid(OG_Stims.MenuFrame) then
@@ -61,6 +90,7 @@ function OG_Stims.OpenMenu()
         surface.SetDrawColor(UI.Col.titleBar)
         surface.DrawRect(0, 0, w, h)
         draw.SimpleText("STIMS", "OG_Heading", 12, h / 2, UI.Col.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+        draw.SimpleText("USE activates a stim  ·  right-click one for a quick slot", "OG_Small", w - 40, h / 2, UI.Col.textDim, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
     end
 
     local closeBtn = UI.Button(titleBar, "X", function() frame:Remove() end)
@@ -84,8 +114,16 @@ function OG_Stims.OpenMenu()
                 selectedID = nil
             else
                 local id = OG_Stims.MyData.loadout[self.SlotIndex]
-                if id then OG_Stims.UseSlot(self.SlotIndex) end
+                if id then TryUse(id) end
             end
+        end
+        slot.DoRightClick = function(self)
+            if OG_Stims.MyData.loadout[self.SlotIndex] then OG_Stims.SetLoadoutSlot(self.SlotIndex, nil) end
+        end
+        slot.Think = function(self)
+            local id = OG_Stims.MyData.loadout[self.SlotIndex]
+            local stim = id and OG_Stims:GetStim(id)
+            self:SetTooltip(stim and (stim.name .. "\n" .. table.concat(OG_Stims:BuffLines(stim), ", ") .. "\nClick to use, right-click to clear") or ("Quick slot " .. self.SlotIndex .. "\nRight-click a stim to assign it here"))
         end
         slot.Paint = function(self, w, h)
             local id = OG_Stims.MyData.loadout[self.SlotIndex]
@@ -141,6 +179,26 @@ function OG_Stims.OpenMenu()
             row:SetTall(58)
             row:SetText("")
             row.DoClick = function() selectedID = entry.id end
+            row.DoDoubleClick = function() TryUse(entry.id) end
+            row.DoRightClick = function()
+                local menu = DermaMenu()
+                menu:AddOption("Use", function() TryUse(entry.id) end)
+                local sub = menu:AddSubMenu("Put in quick slot")
+                for i = 1, OG_Stims.LOADOUT_SLOTS do
+                    sub:AddOption("Slot " .. i, function() OG_Stims.SetLoadoutSlot(i, entry.id) end)
+                end
+                menu:Open()
+            end
+
+            local useBtn = UI.Button(row, "USE", function() TryUse(entry.id) end)
+            useBtn:SetSize(84, 28)
+            row.PerformLayout = function(self, w, h) useBtn:SetPos(w - 96, (h - 28) / 2) end
+            useBtn.Think = function(self)
+                local mode = UseMode(stim, entry.id)
+                self.Label = mode == "replace" and "REPLACE" or mode == "refresh" and "REFRESH" or "USE"
+                self.Accent = mode == "replace" and UI.Col.gold or (mode == "refresh" and UI.Col.staged or UI.Col.green)
+            end
+
             row.Paint = function(self, w, h)
                 local sel = selectedID == entry.id
                 local rc = RarityColor(stim.rarity)
@@ -158,7 +216,7 @@ function OG_Stims.OpenMenu()
                     "OG_Small", h + 4, 26, UI.Col.green, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP
                 )
                 draw.SimpleText(stim.desc or "", "OG_Small", h + 4, 41, UI.Col.textDim, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-                draw.SimpleText("x" .. entry.qty, "OG_Body", w - 12, h / 2, UI.Col.gold, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+                draw.SimpleText("x" .. entry.qty, "OG_Body", w - 106, h / 2, UI.Col.gold, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
             end
         end
         if #ItemList(OG_Stims.MyData.inventory, "stim") == 0 then

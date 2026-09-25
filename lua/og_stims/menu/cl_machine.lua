@@ -73,8 +73,9 @@ function OG_Stims.PlayCrate(boxID, stimID, rarity, pityTriggered)
     frame:MakePopup()
     frame.Paint = function(self, pw, ph)
         UI.Panel(pw, ph)
+        UI.RoundBox(1, 1, pw - 2, 30, 5, UI.Col.titleBar)
         surface.SetDrawColor(UI.Col.titleBar)
-        surface.DrawRect(1, 1, pw - 2, 30)
+        surface.DrawRect(1, 16, pw - 2, 15)
         draw.SimpleText(string.upper(box.name), "OG_Heading", 12, 16, UI.Col.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
         if finished then
@@ -214,8 +215,9 @@ function OG_Stims.OpenMachineMenu()
     titleBar:SetPos(1, 1)
     titleBar:SetSize(w - 2, 32)
     titleBar.Paint = function(self, tw, th)
+        UI.RoundBox(0, 0, tw, th, 5, UI.Col.titleBar)
         surface.SetDrawColor(UI.Col.titleBar)
-        surface.DrawRect(0, 0, tw, th)
+        surface.DrawRect(0, th / 2, tw, th / 2)
         draw.SimpleText("STIM CRATES", "OG_Heading", 12, th / 2, UI.Col.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
         local x = tw - 40
@@ -246,9 +248,7 @@ function OG_Stims.OpenMachineMenu()
         row:DockMargin(0, 0, 0, 6)
         row:SetTall(ROW_H)
         row.Paint = function(self, rw, rh)
-            surface.SetDrawColor(UI.Col.frame)
-            surface.DrawRect(0, 0, rw, rh)
-            UI.Outline(0, 0, rw, rh, UI.Col.edgeDim)
+            UI.RoundBox(0, 0, rw, rh, 6, UI.Col.frame, UI.Col.edgeDim)
 
             OG_Stims.DrawTile(8, 10, 46, box.icon)
 

@@ -14,7 +14,22 @@ local function ItemList(inv, kindFilter)
             table.insert(list, { id = id, qty = qty, def = def })
         end
     end
-    table.sort(list, function(a, b) return a.id < b.id end)
+    -- Stims group by category, best tier first within a bonus; anything else by id
+    local function catIndex(def)
+        for i, cat in ipairs(OG_Stims.CategoryOrder) do
+            if cat == def.category then return i end
+        end
+        return 0
+    end
+    table.sort(list, function(a, b)
+        local ca, cb = catIndex(a.def), catIndex(b.def)
+        if ca ~= cb then return ca < cb end
+        local ea, eb = a.def.icon or "", b.def.icon or ""
+        if ea ~= eb then return ea < eb end
+        local ra, rb = OG_Stims:RarityRank(a.def.rarity), OG_Stims:RarityRank(b.def.rarity)
+        if ra ~= rb then return ra > rb end
+        return a.id < b.id
+    end)
     return list
 end
 
@@ -127,7 +142,7 @@ function OG_Stims.OpenMenu()
             local row = vgui.Create("DButton", scroll)
             row:Dock(TOP)
             row:DockMargin(0, 0, 0, 4)
-            row:SetTall(40)
+            row:SetTall(58)
             row:SetText("")
             row.DoClick = function() selectedID = entry.id end
             row.Paint = function(self, w, h)
@@ -141,14 +156,16 @@ function OG_Stims.OpenMenu()
                 if icon then
                     surface.SetMaterial(icon)
                     surface.SetDrawColor(255, 255, 255, 255)
-                    surface.DrawTexturedRect(6, 6, h - 12, h - 12)
+                    surface.DrawTexturedRect(10, 14, h - 28, h - 28)
                 end
 
-                draw.SimpleText(stim.name, "OG_Body", h + 4, h / 2 - 8, rc, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+                -- name / what it gives / what it does
+                draw.SimpleText(stim.name, "OG_Body", h + 4, 8, rc, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
                 draw.SimpleText(
-                    (OG_Stims:GetCategory(stim.category) or {}).name or stim.category,
-                    "OG_Small", h + 4, h / 2 + 8, UI.Col.textDim, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER
+                    table.concat(OG_Stims:BuffLines(stim), ", ") .. "  ·  " .. string.NiceTime(stim.duration),
+                    "OG_Small", h + 4, 26, UI.Col.green, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP
                 )
+                draw.SimpleText(stim.desc or "", "OG_Small", h + 4, 41, UI.Col.textDim, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
                 draw.SimpleText("x" .. entry.qty, "OG_Body", w - 12, h / 2, UI.Col.gold, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
             end
         end

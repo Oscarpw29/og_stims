@@ -1,119 +1,115 @@
--- Stim/adrenal/medpac definitions - SWTOR-style consumable buffs.
--- One active buff per category: using a new stim in the same category replaces the old
--- one (its timer resets to the new stim's duration).
+-- Stims: 1-hour consumable buffs. Each stim gives exactly ONE kind of bonus, in five quality
+-- tiers (common -> legendary). Bonuses are grouped into categories, and only one buff per
+-- category can be active - so you can't stack two health stims, but you can run a health,
+-- a damage and an XP stim together.
 --
--- `buffs` uses the same stat keys as skilltrees (SkillTrees.StatLabels, sh_core.lua):
--- hp, armor, speed/movespeed, firerate, reloadspeed, resistance, damage, salary_bonus,
--- salary_per_kill, xp_boost, etc. Any addon reading SkillTrees:CalculateBuffs (or
--- OG.Stats.Get directly) sees these the moment a stim is used, no other code changes.
+-- `stat` keys are the same ones skilltrees uses (SkillTrees.StatLabels, sh_core.lua). Any
+-- addon reading SkillTrees:CalculateBuffs (or OG.Stats.Get) sees them the moment a stim is
+-- used, no other code changes.
 OG_Stims = OG_Stims or {}
 
-OG_Stims.CategoryOrder = { "stim", "adrenal", "medpac" }
+OG_Stims.CategoryOrder = { "health", "armor", "weapon", "damage", "money", "xp" }
 
 OG_Stims.Categories = {
-    stim    = { name = "Stim",    desc = "Combat stims: health, resistance and mobility bonuses." },
-    adrenal = { name = "Adrenal", desc = "Offensive boosts: fire rate, damage, reload." },
-    medpac  = { name = "Medpac",  desc = "Recovery: health and armor regeneration." },
+    health = { name = "Health",     desc = "Max health or health regeneration." },
+    armor  = { name = "Armor",      desc = "Max armor or armor regeneration." },
+    weapon = { name = "Weapon",     desc = "Fire rate or reload speed." },
+    damage = { name = "Damage",     desc = "Bullet damage." },
+    money  = { name = "Salary",     desc = "Bigger paydays." },
+    xp     = { name = "Experience", desc = "Faster skill tree XP." },
 }
 
--- Quality tiers. `weight` is only used as the *default* lootbox roll distribution
--- (a lootbox can override with its own `rarityWeights`); `color` drives icon/text tint.
+-- Quality tiers. `color` drives icon/text tint; `prefix` names the stims.
 OG_Stims.RarityOrder = { "common", "uncommon", "rare", "epic", "legendary" }
 
 OG_Stims.Rarities = {
-    common    = { name = "Common",    color = Color(190, 195, 200), weight = 65 },
-    uncommon  = { name = "Uncommon",  color = Color(90, 200, 110),  weight = 25 },
-    rare      = { name = "Rare",      color = Color(80, 160, 235),  weight = 8 },
-    epic      = { name = "Epic",      color = Color(180, 100, 235), weight = 1.8 },
-    legendary = { name = "Legendary", color = Color(245, 170, 40),  weight = 0.2 },
+    common    = { name = "Common",    prefix = "Basic",     color = Color(190, 195, 200) },
+    uncommon  = { name = "Uncommon",  prefix = "Improved",  color = Color(90, 200, 110) },
+    rare      = { name = "Rare",      prefix = "Advanced",  color = Color(80, 160, 235) },
+    epic      = { name = "Epic",      prefix = "Superior",  color = Color(180, 100, 235) },
+    legendary = { name = "Legendary", prefix = "Prototype", color = Color(245, 170, 40) },
 }
 
--- id -> { name, category, rarity, duration (seconds), buffs = {stat=amount}, cooldown,
---         icon, unlock }
--- `unlock` is an OG.MatchesAccess rule (Teams/MRSGroup/Ranks/SteamIDs); omit for "everyone".
--- Higher rarities are just bigger/longer versions of the same category - lootboxes roll
--- a rarity first, then a random stim of that rarity.
-OG_Stims.Definitions = {
-    battle_stim = {
-        name     = "Battle Stim",
-        category = "stim",
-        rarity   = "common",
-        duration = 3600,
-        cooldown = 60,
-        icon     = "icon16/heart.png",
-        buffs    = { hp = 20, resistance = 0.02 },
-    },
-    reflex_stim = {
-        name     = "Reflex Stim",
-        category = "stim",
-        rarity   = "common",
-        duration = 3600,
-        cooldown = 60,
-        icon     = "icon16/user_go.png",
-        buffs    = { movespeed = 0.03, reloadspeed = 0.05 },
-    },
-    kolto_medpac = {
-        name     = "Kolto Medpac",
-        category = "medpac",
-        rarity   = "common",
-        duration = 3600,
-        cooldown = 45,
-        icon     = "icon16/heart_add.png",
-        buffs    = { hpregen = 1 },
-    },
-    exotech_adrenal = {
-        name     = "Exotech Adrenal",
-        category = "adrenal",
-        rarity   = "uncommon",
-        duration = 3600,
-        cooldown = 90,
-        icon     = "icon16/lightning.png",
-        buffs    = { firerate = 0.04, damage = 0.04 },
-    },
-    advanced_battle_stim = {
-        name     = "Advanced Battle Stim",
-        category = "stim",
-        rarity   = "rare",
-        duration = 3600,
-        cooldown = 60,
-        icon     = "icon16/heart.png",
-        buffs    = { hp = 40, resistance = 0.04 },
-    },
-    bio_medpac = {
-        name     = "Bio-Medpac",
-        category = "medpac",
-        rarity   = "rare",
-        duration = 3600,
-        cooldown = 45,
-        icon     = "icon16/heart_add.png",
-        buffs    = { hpregen = 2, armorregen = 1 },
-    },
-    exotech_adrenal_mk2 = {
-        name     = "Exotech Adrenal MK-2",
-        category = "adrenal",
-        rarity   = "epic",
-        duration = 3600,
-        cooldown = 90,
-        icon     = "icon16/lightning.png",
-        buffs    = { firerate = 0.07, damage = 0.07, reloadspeed = 0.05 },
-    },
-    exotech_adrenal_prototype = {
-        name     = "Exotech Adrenal Prototype",
-        category = "adrenal",
-        rarity   = "legendary",
-        duration = 3600,
-        cooldown = 90,
-        icon     = "icon16/lightning.png",
-        buffs    = { firerate = 0.10, damage = 0.10, reloadspeed = 0.08, movespeed = 0.03 },
-    },
+OG_Stims.DURATION = 3600 -- seconds; every stim lasts an hour
+OG_Stims.COOLDOWN = 30   -- seconds before the same stim can be used again
+
+-- One entry per kind of bonus. `values` are the five tiers, common -> legendary.
+-- Percent stats are fractions (0.05 = 5%). Regen values are per 2 seconds (skilltrees' tick).
+-- Balanced against ~350 HP troopers and skilltrees' per-level values (5-12 HP, 5% damage,
+-- 5% fire rate, 2 HP regen per level).
+OG_Stims.Effects = {
+    { key = "hp",          name = "Vitality Stim",     category = "health", stat = "hp",
+      icon = "icon16/heart.png",
+      desc = "Raises your maximum health.",
+      values = { 20, 30, 40, 55, 70 } },
+
+    { key = "hpregen",     name = "Recovery Stim",     category = "health", stat = "hpregen",
+      icon = "icon16/heart_add.png",
+      desc = "Slowly restores health when you're not being shot at.",
+      values = { 1, 2, 3, 4, 5 } },
+
+    { key = "armor",       name = "Bulwark Stim",      category = "armor",  stat = "armor",
+      icon = "icon16/shield.png",
+      desc = "Raises your maximum armor.",
+      values = { 10, 15, 25, 35, 50 } },
+
+    { key = "armorregen",  name = "Mending Stim",      category = "armor",  stat = "armorregen",
+      icon = "icon16/shield_add.png",
+      desc = "Slowly restores armor over time.",
+      values = { 1, 2, 3, 4, 5 } },
+
+    { key = "firerate",    name = "Overclock Adrenal", category = "weapon", stat = "firerate",
+      icon = "icon16/lightning.png",
+      desc = "Your weapons fire faster.",
+      values = { 0.03, 0.05, 0.07, 0.09, 0.12 } },
+
+    { key = "reloadspeed", name = "Quickload Adrenal", category = "weapon", stat = "reloadspeed",
+      icon = "icon16/arrow_refresh.png",
+      desc = "Your weapons reload faster.",
+      values = { 0.05, 0.08, 0.11, 0.14, 0.18 } },
+
+    { key = "damage",      name = "Precision Adrenal", category = "damage", stat = "damage",
+      icon = "icon16/bomb.png",
+      desc = "Your bullets hit harder.",
+      values = { 0.03, 0.05, 0.07, 0.09, 0.12 } },
+
+    { key = "money",       name = "Windfall Stim",     category = "money",  stat = "salary_bonus",
+      icon = "icon16/money.png",
+      desc = "Every payday pays out more.",
+      values = { 0.05, 0.08, 0.12, 0.16, 0.20 } },
+
+    { key = "xp",          name = "Insight Stim",      category = "xp",     stat = "xp_boost",
+      icon = "icon16/star.png",
+      desc = "You earn skill tree XP faster.",
+      values = { 0.05, 0.10, 0.15, 0.20, 0.25 } },
 }
+
+-- Build the definitions: id = "<key>_<rarity>", e.g. "hp_common", "damage_legendary".
+-- id -> { name, category, rarity, duration, cooldown, icon, desc, buffs = { stat = amount },
+--         unlock }.  `unlock` is an optional OG.MatchesAccess rule (Teams/MRSGroup/Ranks/SteamIDs).
+-- Add hand-written one-offs below the loop if you ever need a stim that breaks the pattern.
+OG_Stims.Definitions = {}
+
+for _, effect in ipairs(OG_Stims.Effects) do
+    for tier, rarity in ipairs(OG_Stims.RarityOrder) do
+        OG_Stims.Definitions[effect.key .. "_" .. rarity] = {
+            name     = OG_Stims.Rarities[rarity].prefix .. " " .. effect.name,
+            category = effect.category,
+            rarity   = rarity,
+            duration = OG_Stims.DURATION,
+            cooldown = OG_Stims.COOLDOWN,
+            icon     = effect.icon,
+            desc     = effect.desc,
+            buffs    = { [effect.stat] = effect.values[tier] },
+        }
+    end
+end
 
 -- id -> { name, icon, desc, price, rarityWeights, pity }
 -- price:         { currency = "money" | "playtime", amount = N }  (see OG_core sh_currency.lua)
 --                A crate with no price can only be opened from inventory (event/admin rewards).
--- rarityWeights: overrides OG_Stims.Rarities[x].weight for this crate only; a rarity left
---                out can't drop from it. Opening rolls a rarity from these weights, then a
---                uniformly random stim among that rarity's definitions.
+-- rarityWeights: a rarity left out can't drop from the crate. Opening rolls a rarity from
+--                these weights, then a uniformly random stim of that rarity (9 per rarity).
 -- pity:          { rarity = "rare", after = 10 } - the Nth open in a row without a drop of
 --                that rarity or better is forced to be that rarity or better. The counter
 --                is per player, per crate, and persists.
@@ -152,7 +148,7 @@ OG_Stims.Lootboxes = {
     },
 }
 
--- How close (units) a player must be to a crate machine to buy or open crates.
+-- How close (units) a player must be to a crate machine to buy a crate.
 OG_Stims.MachineRange = 200
 
 -- Buff bar (top right). Offsets are from the screen edge, in pixels at 1080p.

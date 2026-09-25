@@ -1,7 +1,7 @@
 -- Shared rules, same split as skilltrees/sh_core.lua: server enforces, menu displays,
 -- both go through these so they agree.
 OG_Stims.Table = OG_Stims.Definitions -- alias, matches skilltrees' `Tree` naming habit
-OG_Stims.LOADOUT_SLOTS = 4
+OG_Stims.LOADOUT_SLOTS = 6 -- one per buff category
 
 function OG_Stims:GetStim(id)
     return self.Definitions[id]

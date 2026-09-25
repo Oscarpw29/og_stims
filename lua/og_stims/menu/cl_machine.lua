@@ -81,8 +81,9 @@ function OG_Stims.PlayCrate(boxID, stimID, rarity, pityTriggered)
             local col = RarityColor(rarity)
             draw.SimpleText(RarityName(rarity), "OG_Small", pw / 2, 172, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
             draw.SimpleText(winner.name, "OG_Big", pw / 2, 188, UI.Col.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+            draw.SimpleText(table.concat(OG_Stims:BuffLines(winner), ", "), "OG_Body", pw / 2, 222, UI.Col.green, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
             if pityTriggered then
-                draw.SimpleText("Pity protection triggered", "OG_Small", pw / 2, 222, UI.Col.gold, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+                draw.SimpleText("Pity protection triggered", "OG_Small", pw / 2, 246, UI.Col.gold, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
             end
         end
     end

@@ -126,3 +126,9 @@ function OG_Stims:BuffLines(stim)
     table.sort(lines)
     return lines
 end
+
+-- Does this stim's buff survive the player dying?
+function OG_Stims:KeepsOnDeath(stim)
+    if stim.keepOnDeath ~= nil then return stim.keepOnDeath end
+    return self.KeepOnDeath[stim.rarity] == true
+end

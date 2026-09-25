@@ -162,7 +162,8 @@ function OG_Stims.OpenMenu()
                 -- name / what it gives / what it does
                 draw.SimpleText(stim.name, "OG_Body", h + 4, 8, rc, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
                 draw.SimpleText(
-                    table.concat(OG_Stims:BuffLines(stim), ", ") .. "  ·  " .. string.NiceTime(stim.duration),
+                    table.concat(OG_Stims:BuffLines(stim), ", ") .. "  ·  " .. string.NiceTime(stim.duration)
+                        .. (OG_Stims:KeepsOnDeath(stim) and "  ·  kept on death" or "  ·  lost on death"),
                     "OG_Small", h + 4, 26, UI.Col.green, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP
                 )
                 draw.SimpleText(stim.desc or "", "OG_Small", h + 4, 41, UI.Col.textDim, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)

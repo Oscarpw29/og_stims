@@ -129,3 +129,23 @@ end)
 hook.Add("ShutDown", "OG_Stims_ActiveSave", function()
     for _, ply in ipairs(player.GetHumans()) do persist(ply) end
 end)
+
+-- Dying ends buffs whose rarity doesn't survive death (OG_Stims.KeepOnDeath). The player is
+-- told which ones wore off; the HUD card is removed by the normal end-of-buff sync.
+hook.Add("PlayerDeath", "OG_Stims_LoseOnDeath", function(ply)
+    if not IsValid(ply) or not ply:IsPlayer() then return end
+
+    -- Collect first: endBuff edits the active table
+    local lost = {}
+    for category, entry in pairs(activeTable(ply)) do
+        local stim = OG_Stims:GetStim(entry.id)
+        if stim and not OG_Stims:KeepsOnDeath(stim) then
+            table.insert(lost, { category = category, stim = stim })
+        end
+    end
+
+    for _, item in ipairs(lost) do
+        endBuff(ply, item.category)
+        if OG.Notify then OG.Notify(ply, item.stim.name .. " wore off when you died.", "warn") end
+    end
+end)

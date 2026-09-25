@@ -10,6 +10,8 @@ Requires `OG_core`; buffs act through `skilltrees`.
 - **Categories:** health, armor, weapon, damage, salary, experience. Only one buff per
   category is active - a new stim replaces the old one in its category - but different
   categories stack. Each stim has a short description shown in the menu.
+- **Death:** dying ends buffs below epic (`OG_Stims.KeepOnDeath` in sh_config.lua, or a per-stim
+  `keepOnDeath`); epic and legendary stims survive. The menu says which is which.
 - **Config:** everything is data in `lua/og_stims/sh_config.lua`. The `Effects` table holds the
   five tier values per bonus and the stims are generated from it.
 - **Flow:** own -> assign to one of `OG_Stims.LOADOUT_SLOTS` (6) loadout slots via `!stims`,

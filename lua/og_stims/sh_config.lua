@@ -157,3 +157,11 @@ OG_Stims.HUD = {
     Top      = 16,
     IconSize = 40,
 }
+
+-- Which rarities survive the player dying. Anything not listed here is lost on death (the buff
+-- ends immediately and the stim is not refunded). Set a stim's own `keepOnDeath = true/false`
+-- to override its rarity.
+OG_Stims.KeepOnDeath = {
+    epic      = true,
+    legendary = true,
+}

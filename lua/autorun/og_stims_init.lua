@@ -11,6 +11,7 @@ local FILES = {
     "sv_net.lua",
 
     "cl_net.lua",
+    "cl_icons.lua",
     "cl_hud.lua",
 
     "menu/cl_loadout.lua",

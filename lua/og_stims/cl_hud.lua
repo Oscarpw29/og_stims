@@ -79,16 +79,7 @@ hook.Add("HUDPaint", "OG_Stims_BuffBar", function()
             -- Icon + timer
             local ix = x + w - PAD - iconSize
             local iy = y + PAD
-            surface.SetDrawColor(UI.Col.frame)
-            surface.DrawRect(ix, iy, iconSize, iconSize)
-            UI.Outline(ix, iy, iconSize, iconSize, rc)
-
-            local icon = UI.Icon(stim.icon)
-            if icon then
-                surface.SetMaterial(icon)
-                surface.SetDrawColor(255, 255, 255, 255 * flash)
-                surface.DrawTexturedRect(ix + 6, iy + 6, iconSize - 12, iconSize - 12)
-            end
+            OG_Stims.DrawTile(ix, iy, iconSize, stim.icon, rc, 255 * flash)
 
             draw.SimpleText(FormatTime(remaining), "OG_Small", ix + iconSize / 2, iy + iconSize + 2,
                 warn and UI.Alpha(UI.Col.red, 255 * flash) or UI.Col.textDim, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)

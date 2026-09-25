@@ -55,3 +55,15 @@ hook.Add("PlayerSay", "OG_Stims_ChatCommand", function(ply, text)
     net.Send(ply)
     return ""
 end)
+
+-- Tell joining clients to download our icon images (they come from FastDL / the game server).
+-- Built from the config so it stays in sync; remember to copy materials/og_stims/*.png to FastDL.
+do
+    local files = {}
+    local function add(icon)
+        if isstring(icon) and icon:sub(1, 9) == "og_stims/" then files["materials/" .. icon] = true end
+    end
+    for _, stim in pairs(OG_Stims.Definitions) do add(stim.icon) end
+    for _, box in pairs(OG_Stims.Lootboxes) do add(box.icon) end
+    for path in pairs(files) do resource.AddFile(path) end
+end

@@ -122,18 +122,7 @@ function OG_Stims.PlayCrate(boxID, stimID, rarity, pityTriggered)
                 local col = RarityColor(stim.rarity)
                 local dim = finished and i ~= WIN_INDEX
 
-                surface.SetDrawColor(UI.Col.frame)
-                surface.DrawRect(x, 8, CARD_W, CARD_H)
-                surface.SetDrawColor(col.r, col.g, col.b, dim and 70 or 255)
-                surface.DrawRect(x, 8 + CARD_H - 5, CARD_W, 5)
-                UI.Outline(x, 8, CARD_W, CARD_H, UI.Alpha(col, dim and 60 or 200))
-
-                local icon = UI.Icon(stim.icon)
-                if icon then
-                    surface.SetMaterial(icon)
-                    surface.SetDrawColor(255, 255, 255, dim and 90 or 255)
-                    surface.DrawTexturedRect(x + 20, 8 + 16, CARD_W - 40, CARD_H - 40)
-                end
+                OG_Stims.DrawTile(x, 8, CARD_W, stim.icon, col, dim and 90 or 255)
             end
         end
         render.SetScissorRect(0, 0, 0, 0, false)
@@ -261,12 +250,7 @@ function OG_Stims.OpenMachineMenu()
             surface.DrawRect(0, 0, rw, rh)
             UI.Outline(0, 0, rw, rh, UI.Col.edgeDim)
 
-            local icon = UI.Icon(box.icon)
-            if icon then
-                surface.SetMaterial(icon)
-                surface.SetDrawColor(255, 255, 255, 255)
-                surface.DrawTexturedRect(10, 10, 40, 40)
-            end
+            OG_Stims.DrawTile(8, 10, 46, box.icon)
 
             draw.SimpleText(box.name, "OG_Heading", 62, 10, UI.Col.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
             draw.SimpleText(box.desc or "", "OG_Small", 62, 30, UI.Col.textDim, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)

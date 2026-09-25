@@ -39,47 +39,47 @@ OG_Stims.COOLDOWN = 30   -- seconds before the same stim can be used again
 -- 5% fire rate, 2 HP regen per level).
 OG_Stims.Effects = {
     { key = "hp",          name = "Vitality Stim",     category = "health", stat = "hp",
-      icon = "icon16/heart.png",
+      icon = "og_stims/hp.png",
       desc = "Raises your maximum health.",
       values = { 20, 30, 40, 55, 70 } },
 
     { key = "hpregen",     name = "Recovery Stim",     category = "health", stat = "hpregen",
-      icon = "icon16/heart_add.png",
+      icon = "og_stims/hpregen.png",
       desc = "Slowly restores health when you're not being shot at.",
       values = { 1, 2, 3, 4, 5 } },
 
     { key = "armor",       name = "Bulwark Stim",      category = "armor",  stat = "armor",
-      icon = "icon16/shield.png",
+      icon = "og_stims/armor.png",
       desc = "Raises your maximum armor.",
       values = { 10, 15, 25, 35, 50 } },
 
     { key = "armorregen",  name = "Mending Stim",      category = "armor",  stat = "armorregen",
-      icon = "icon16/shield_add.png",
+      icon = "og_stims/armorregen.png",
       desc = "Slowly restores armor over time.",
       values = { 1, 2, 3, 4, 5 } },
 
     { key = "firerate",    name = "Overclock Adrenal", category = "weapon", stat = "firerate",
-      icon = "icon16/lightning.png",
+      icon = "og_stims/firerate.png",
       desc = "Your weapons fire faster.",
       values = { 0.03, 0.05, 0.07, 0.09, 0.12 } },
 
     { key = "reloadspeed", name = "Quickload Adrenal", category = "weapon", stat = "reloadspeed",
-      icon = "icon16/arrow_refresh.png",
+      icon = "og_stims/reloadspeed.png",
       desc = "Your weapons reload faster.",
       values = { 0.05, 0.08, 0.11, 0.14, 0.18 } },
 
     { key = "damage",      name = "Precision Adrenal", category = "damage", stat = "damage",
-      icon = "icon16/bomb.png",
+      icon = "og_stims/damage.png",
       desc = "Your bullets hit harder.",
       values = { 0.03, 0.05, 0.07, 0.09, 0.12 } },
 
     { key = "money",       name = "Windfall Stim",     category = "money",  stat = "salary_bonus",
-      icon = "icon16/money.png",
+      icon = "og_stims/money.png",
       desc = "Every payday pays out more.",
       values = { 0.05, 0.08, 0.12, 0.16, 0.20 } },
 
     { key = "xp",          name = "Insight Stim",      category = "xp",     stat = "xp_boost",
-      icon = "icon16/star.png",
+      icon = "og_stims/xp.png",
       desc = "You earn skill tree XP faster.",
       values = { 0.05, 0.10, 0.15, 0.20, 0.25 } },
 }
@@ -116,7 +116,7 @@ end
 OG_Stims.Lootboxes = {
     standard_case = {
         name  = "Standard Stim Case",
-        icon  = "icon16/box.png",
+        icon  = "og_stims/crate.png",
         desc  = "Mostly common and uncommon stims. A rare drop now and then.",
         price = { currency = "money", amount = 25000 },
         rarityWeights = { common = 65, uncommon = 27, rare = 7, epic = 1 },
@@ -124,7 +124,7 @@ OG_Stims.Lootboxes = {
     },
     premium_case = {
         name  = "Premium Stim Case",
-        icon  = "icon16/box.png",
+        icon  = "og_stims/crate.png",
         desc  = "Better odds at rare and epic stims, with a shot at a legendary.",
         price = { currency = "money", amount = 100000 },
         rarityWeights = { common = 25, uncommon = 35, rare = 28, epic = 10, legendary = 2 },
@@ -132,7 +132,7 @@ OG_Stims.Lootboxes = {
     },
     elite_case = {
         name  = "Elite Stim Case",
-        icon  = "icon16/box.png",
+        icon  = "og_stims/crate.png",
         desc  = "No commons. Rare and epic stims, with a real chance at a legendary.",
         price = { currency = "money", amount = 2500000 },
         rarityWeights = { uncommon = 10, rare = 42, epic = 36, legendary = 12 },
@@ -140,7 +140,7 @@ OG_Stims.Lootboxes = {
     },
     playtime_case = {
         name  = "Veteran Stim Case",
-        icon  = "icon16/box.png",
+        icon  = "og_stims/crate.png",
         desc  = "Earned with playtime points (1 per 15 min). Same odds as a Standard case.",
         price = { currency = "playtime", amount = 10 },
         rarityWeights = { common = 65, uncommon = 27, rare = 7, epic = 1 },

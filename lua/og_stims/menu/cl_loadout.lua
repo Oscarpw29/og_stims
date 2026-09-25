@@ -91,23 +91,19 @@ function OG_Stims.OpenMenu()
             local id = OG_Stims.MyData.loadout[self.SlotIndex]
             local stim = id and OG_Stims:GetStim(id)
 
-            surface.SetDrawColor(UI.Col.frame)
-            surface.DrawRect(0, 0, w, h)
-            UI.Outline(0, 0, w, h, self:IsHovered() and UI.Col.frameEdge or (stim and RarityColor(stim.rarity) or UI.Col.edgeDim))
-
             if stim then
-                local icon = UI.Icon(stim.icon)
-                if icon then
-                    surface.SetMaterial(icon)
-                    surface.SetDrawColor(255, 255, 255, 255)
-                    surface.DrawTexturedRect(6, 6, w - 12, h - 12)
-                end
+                OG_Stims.DrawTile(0, 0, w, stim.icon, RarityColor(stim.rarity))
+                if self:IsHovered() then UI.Outline(0, 0, w, h, UI.Col.text) end
+
                 local active = OG_Stims.MyActive[stim.category]
                 if active and active.id == id then
                     local remaining = math.max(active.expires - CurTime(), 0)
                     draw.SimpleText(remaining >= 60 and string.format("%dm", math.ceil(remaining / 60)) or string.format("%ds", math.ceil(remaining)), "OG_Small", w / 2, h - 6, UI.Col.green, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
                 end
             else
+                surface.SetDrawColor(UI.Col.frame)
+                surface.DrawRect(0, 0, w, h)
+                UI.Outline(0, 0, w, h, self:IsHovered() and UI.Col.frameEdge or UI.Col.edgeDim)
                 draw.SimpleText(self.SlotIndex, "OG_Small", w / 2, h / 2, UI.Col.textFaint, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
             end
         end
@@ -152,12 +148,7 @@ function OG_Stims.OpenMenu()
                 surface.DrawRect(0, 0, w, h)
                 UI.Outline(0, 0, w, h, sel and rc or UI.Col.edgeDim)
 
-                local icon = UI.Icon(stim.icon)
-                if icon then
-                    surface.SetMaterial(icon)
-                    surface.SetDrawColor(255, 255, 255, 255)
-                    surface.DrawTexturedRect(10, 14, h - 28, h - 28)
-                end
+                OG_Stims.DrawTile(6, 6, h - 12, stim.icon, rc)
 
                 -- name / what it gives / what it does
                 draw.SimpleText(stim.name, "OG_Body", h + 4, 8, rc, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
@@ -193,12 +184,7 @@ function OG_Stims.OpenMenu()
                 surface.DrawRect(0, 0, w, h)
                 UI.Outline(0, 0, w, h, UI.Col.edgeDim)
 
-                local icon = UI.Icon(box.icon)
-                if icon then
-                    surface.SetMaterial(icon)
-                    surface.SetDrawColor(255, 255, 255, 255)
-                    surface.DrawTexturedRect(6, 6, h - 12, h - 12)
-                end
+                OG_Stims.DrawTile(6, 6, h - 12, box.icon)
 
                 draw.SimpleText(box.name, "OG_Body", h + 4, h / 2 - 10, UI.Col.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
                 draw.SimpleText(box.desc or "", "OG_Small", h + 4, h / 2 + 8, UI.Col.textDim, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)

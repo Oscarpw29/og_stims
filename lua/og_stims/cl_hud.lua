@@ -1,4 +1,5 @@
--- Buff bar, top right (SWTOR style): one card per active stim, stacked downwards.
+-- Buff bar, top right (SWTOR style): one card per active stim in a row that grows leftwards
+-- (wrapping to a second row if it would run too far across the screen).
 -- Each card shows the stim's name and what it gives ("+25% Bullet Damage") on the left, and
 -- its icon with the time left beneath it on the right.
 local UI = OG.UI
@@ -46,7 +47,11 @@ hook.Add("HUDPaint", "OG_Stims_BuffBar", function()
 
     local cfg = OG_Stims.HUD
     local iconSize = cfg.IconSize
+    local rightEdge = ScrW() - cfg.Right
+    local cursor = rightEdge   -- right edge of the next card; cards are added leftwards
     local y = cfg.Top
+    local rowH = 0
+    local minX = ScrW() * 0.4  -- past this, wrap to a second row instead of running across the screen
 
     for _, category in ipairs(OG_Stims.CategoryOrder) do
         local entry = OG_Stims.MyActive[category]
@@ -59,7 +64,13 @@ hook.Add("HUDPaint", "OG_Stims_BuffBar", function()
             local iconH = iconSize + 2 + TIMER_H
             local h = math.max(textH, iconH) + PAD * 2
             local w = PAD + text.width + GAP + iconSize + PAD
-            local x = ScrW() - cfg.Right - w
+
+            if cursor < rightEdge and cursor - w < minX then
+                cursor = rightEdge
+                y = y + rowH + 6
+                rowH = 0
+            end
+            local x = cursor - w
 
             local rc = RarityColor(stim.rarity)
             local warn = remaining <= WARN_SECONDS
@@ -84,7 +95,8 @@ hook.Add("HUDPaint", "OG_Stims_BuffBar", function()
             draw.SimpleText(FormatTime(remaining), "OG_Small", ix + iconSize / 2, iy + iconSize + 2,
                 warn and UI.Alpha(UI.Col.red, 255 * flash) or UI.Col.textDim, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 
-            y = y + h + 6
+            cursor = x - 6
+            rowH = math.max(rowH, h)
         end
     end
 end)

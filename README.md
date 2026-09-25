@@ -42,7 +42,7 @@ Requires `OG_core`; buffs act through `skilltrees`.
   (`cl_icons.lua`). Clients need the PNGs: publish `og_stims_content` as a Workshop item and add
   it to `workshop.lua`, or set `OG_Stims.IconsViaFastDL = true` and serve them from FastDL.
 - **Buff bar (top right):** one card per active stim - name, what it gives, and the icon with the
-  time left beneath it (flashes red in the last 30s). Position and size are in `OG_Stims.HUD`.
+  time left beneath it (flashes red in the last 30s). Cards form one row growing left from the top-right corner (wrapping if it gets too wide); position and size are in `OG_Stims.HUD`.
   Time only counts down while the player is online, and active buffs survive reconnects and
   restarts.
 

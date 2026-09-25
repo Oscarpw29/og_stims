@@ -21,12 +21,26 @@ net.Receive("og_stims.active_sync", function()
     local category = net.ReadString()
     local active = net.ReadBool()
 
+    local ply = LocalPlayer()
+    local source = OG_Stims:StatSource(category)
+
     if not active then
         OG_Stims.MyActive[category] = nil
+        if IsValid(ply) then OG.Stats.Clear(source, ply) end
     else
         local id = net.ReadString()
         local remaining = net.ReadFloat()
         OG_Stims.MyActive[category] = { id = id, expires = CurTime() + remaining }
+
+        local stim = OG_Stims:GetStim(id)
+        if IsValid(ply) and stim then OG.Stats.Set(source, ply, stim.buffs) end
+    end
+
+    -- Mirror the buffs on the client too. The server applies them, but the client predicts firing
+    -- and reloading and must use the same numbers, or shots and reloads feel out of step.
+    if IsValid(ply) then
+        OG.Stats.Invalidate(ply) -- clears skilltrees' cached totals via OG_StatsChanged
+        if SkillTrees and SkillTrees.RefreshWeapons then SkillTrees:RefreshWeapons(ply) end
     end
 
     hook.Run("OG_Stims_ActiveUpdated", category)

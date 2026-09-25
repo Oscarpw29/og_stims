@@ -58,7 +58,7 @@ end)
 
 -- Tell joining clients to download our icon images (they come from FastDL / the game server).
 -- Built from the config so it stays in sync; remember to copy materials/og_stims/*.png to FastDL.
-do
+if OG_Stims.IconsViaFastDL then
     local files = {}
     local function add(icon)
         if isstring(icon) and icon:sub(1, 9) == "og_stims/" then files["materials/" .. icon] = true end

@@ -165,3 +165,9 @@ OG_Stims.KeepOnDeath = {
     epic      = true,
     legendary = true,
 }
+
+-- Send the icon PNGs to joining clients through the game server's download list (FastDL /
+-- direct download). Leave off when the icons come from a Workshop content addon listed in
+-- workshop.lua (the recommended setup); turn on only if you serve materials/og_stims/*.png
+-- from FastDL yourself.
+OG_Stims.IconsViaFastDL = false

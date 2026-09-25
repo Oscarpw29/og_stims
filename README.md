@@ -32,6 +32,9 @@ Requires `OG_core`; buffs act through `skilltrees`.
   `og_stims_reset` (inventory, loadout, pity), `og_stims_savemachines`, `og_stims_clearmachines`.
 - **Buffs** go through `OG.Stats`, so skilltrees' hooks (health, armor, regen, fire rate, reload,
   damage, salary, XP) pick them up with no changes on its side.
+- **Icons:** `materials/og_stims/*.png` (nine bonuses + crate) are drawn on rarity-coloured tiles
+  (`cl_icons.lua`). Clients need the PNGs: publish `og_stims_content` as a Workshop item and add
+  it to `workshop.lua`, or set `OG_Stims.IconsViaFastDL = true` and serve them from FastDL.
 - **Buff bar (top right):** one card per active stim - name, what it gives, and the icon with the
   time left beneath it (flashes red in the last 30s). Position and size are in `OG_Stims.HUD`.
   Time only counts down while the player is online, and active buffs survive reconnects and
